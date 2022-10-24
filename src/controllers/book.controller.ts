@@ -3,31 +3,41 @@
 import Book from "../models/book.model";
 import { Request, Response } from 'express';
 import BookInterface from "../interfaces/book.interface";
+import { IPaginateOptions } from "typegoose-cursor-pagination";
 
 
 
 export const getAll = async( req: Request , res: Response ) => {
 
-    const limit:  number = 10;
-    const skip :  number = 10;
+    const limit: number =  10
+    const page = Number(req.query.page) || 1
+    const skip: any =  page == 1 ? 0 : (page - 1) * limit;
+
  
     try {
         const [ books, total ] = await Promise.all([
-            Book.find({}).skip( skip )
-                         .limit( limit ),
-            Book.count()
+            Book.find( {})
+                .limit( limit )
+                .skip( skip )
+                .sort({ _id: -1 })
+            , Book.count()
         ]);
 
         if( !books.length ) 
             return res.status( 404 ).json({ 
                 msg: 'No hay libros registrados.'
-            }); 
-       
-            
-        res.json({ 
-            status: true, 
-            books,
-            total
+        }); 
+
+      const data = {
+            page: page,
+            totalPages: Math.ceil(total / limit),
+            totalPerPage: books.length,
+            total: total,
+            data: books
+        } 
+        
+        res.status(200).json({ 
+            data
         });
 
     } catch (error) {

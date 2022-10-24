@@ -10,7 +10,7 @@ export async function insert ( ) {
     try {
        let books = await Book.find();
        if( books.length > 0 ) {
-         return console.log('Los usuarios ya estan registrados en el sistema');
+         return console.log('Los libros ya estan registrados en el sistema');
        }else {
         await bookDataset.results.forEach( async ( element ) => {
             let book: BookInterface = {
@@ -29,7 +29,7 @@ export async function insert ( ) {
            await Book.create( newBook );
             
         }); 
-        return 'Usuarios registrados ';
+        return 'Libros registrados ';
 
        }
        

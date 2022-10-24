@@ -12,38 +12,39 @@ export const search = async( req: Request , res: Response ) => {
     const body : any = req.params.body;
     const regex = new RegExp( body, 'i' );
 
-    const limit: number  =  10;
-    const skip : number  =  0;
+    const limit: number =  10
+    const page = Number(req.query.page) || 1
+    const skip: any =  page == 1 ? 0 : (page - 1) * limit;
 
     try {
 
-        let data: BookInterface [] = [];
-        let total: number; 
+        let bookData: BookInterface [] = [];
+        let total: any; 
         switch( field ) {
 
             case  'ISBN':
-                data = await Book.find({ ISBN: regex }).skip( skip).limit( limit);
-                total = await Book.count();
+                bookData = await Book.find({ ISBN: regex }).skip( skip).limit( limit );
+                
             break;
 
             case  'Book_Title':
-                data = await Book.find({ Book_Title: regex }).skip( skip).limit( limit);
-                total = await Book.count();
+                bookData = await Book.find({ Book_Title: regex }).skip( skip).limit( limit);
+                
             break;
 
             case  'Year_Of_Publication':
-                data = await Book.find({ Year_Of_Publication: regex }).skip( skip).limit( limit);
-                total = await Book.count();
+                bookData = await Book.find({ Year_Of_Publication: regex }).skip( skip).limit( limit);
+                
             break;
 
             case  'Book_Author':
-                data = await Book.find({ Book_Author: regex }).skip( skip).limit( limit);
-                total = await Book.count();
+                bookData = await Book.find({ Book_Author: regex }).skip( skip).limit( limit);
+                
             break;
 
             case  'Publisher':
-                data = await Book.find({ Publisher: regex }).skip( skip).limit( limit);
-                total = await Book.count();
+                bookData = await Book.find({ Publisher: regex }).skip( skip).limit( limit);
+                
             break;
 
             default:
@@ -53,13 +54,22 @@ export const search = async( req: Request , res: Response ) => {
             });
 
         }
+
+        const data = {
+            page: page,
+            totalPerPage: bookData.length,
+            totalPages: Math.ceil( bookData.length / limit),
+            total: bookData.length,
+            data: bookData,
+            
+        } 
         
        
         res.json({ 
             status: true, 
             msg: 'Resultados de la busqueda.',
-             data, 
-             total 
+            data, 
+              
         });
 
     } catch (error) {
@@ -68,3 +78,5 @@ export const search = async( req: Request , res: Response ) => {
     } 
     
 }
+
+

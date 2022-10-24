@@ -9,7 +9,7 @@ class BookInterface {
     Publisher:           string | number;
     Image_URL_S:         string | number;
     Image_URL_M:         string | number;
-    Image_URL_L?:        string | number;
+    Image_URL_L?:         string | number;
 }
 
 export default BookInterface;
