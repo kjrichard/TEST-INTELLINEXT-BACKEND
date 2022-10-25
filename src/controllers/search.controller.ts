@@ -15,15 +15,21 @@ export const search = async( req: Request , res: Response ) => {
     const limit: number =  10
     const page = Number(req.query.page) || 1
     const skip: any =  page == 1 ? 0 : (page - 1) * limit;
-
+    let param: any = parseInt(body);
+    
     try {
 
         let bookData: BookInterface [] = [];
         let total: any; 
         switch( field ) {
 
-            case  'ISBN':
+        /*     case  'ISBN':
                 bookData = await Book.find({ ISBN: regex }).skip( skip).limit( limit );
+                
+            break; */
+
+            case  'ISBN':
+                bookData = await Book.find({ ISBN: param }).skip( skip).limit( limit );
                 
             break;
 
@@ -33,7 +39,7 @@ export const search = async( req: Request , res: Response ) => {
             break;
 
             case  'Year_Of_Publication':
-                bookData = await Book.find({ Year_Of_Publication: regex }).skip( skip).limit( limit);
+                bookData = await Book.find({ Year_Of_Publication: param }).skip( skip).limit( limit);
                 
             break;
 
